@@ -86,13 +86,13 @@ char* convert_to_rawdata(void){
 int parse_macroses(void)
 {
     init_hashmap();
-    FILE* config = fopen("test.conf", "r");
+    FILE* config = fopen(path, "r");
     if (!config){
         char command[256];
         strcpy(command, "touch ");
-        strcat(command, "test.conf");
+        strcat(command, path);
         system(command);
-        config = fopen("test.conf", "r");
+        config = fopen(path, "r");
     }
     fseek(config, 0L, SEEK_END);
     uint64_t filesize = ftell(config);
@@ -150,7 +150,7 @@ int parse_macroses(void)
 
 void write_macroses(void){
     char* data = convert_to_rawdata();
-    FILE* config = fopen("test.conf", "w");
+    FILE* config = fopen(path, "w");
     if (!config) {
         fprintf(stderr, "Cannot open config file!");
         exit(1);
@@ -164,6 +164,12 @@ void write_macroses(void){
 
 int main(int argc, char *argv[])
 {
+    if (argc == 1) return 0;
+    char username[64];
+    getlogin_r(username, 64);
+    strcpy(path, "/home/");
+    strcat(path, username);
+    strcat(path, "/.config/mcr.conf");
     if (argc == 2 && strcmp(argv[1], "install") == 0)
     {
         char current_path[1024];
@@ -230,17 +236,11 @@ int main(int argc, char *argv[])
     else if (strcmp(argv[1], "list") == 0){
         if (argc != 2) return 1;
         parse_macroses();
-        printf("Available macroses:\n");
+        printf(hashmap_count(macroses) > 0 ? "Available macroses:\n" : "There is no registered macroses!\n");
         hashmap_scan(macroses, macro_iter_listcmd, NULL);
         exit(0);
     }
     parse_macroses();
-    if (argc == 1) return 0;
-    char username[64];
-    getlogin_r(username, 64);
-    strcpy(path, "/home/");
-    strcat(path, username);
-    strcat(path, "/.config/mcr.conf");
     struct macro tmp;
     strcpy(tmp.key, argv[1]);
     hashmap_scan(macroses, macro_iter, NULL);
@@ -283,7 +283,6 @@ int main(int argc, char *argv[])
     char buff[length];
     memcpy(&buff, finalcommand, length);
     free(finalcommand);
-    printf(&buff);
     hashmap_free(macroses);
     return system(buff);
 }
