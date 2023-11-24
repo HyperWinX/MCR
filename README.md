@@ -1,4 +1,4 @@
-# addmacro
+# MCR
 Really simple C program for creating powerful macroses.
 ---
 Syntax:
