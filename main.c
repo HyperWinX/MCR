@@ -7,6 +7,8 @@
 #include <stdbool.h>
 #include "hashmap.h"
 
+#define MCR_VERSION 1.2
+
 struct macro
 {
     char key[32];
@@ -249,10 +251,39 @@ int main(int argc, char *argv[])
         printf("\tmcr --remove <macros> - remove macros\n");
         exit(0);
     }
+    else if (strcmp(argv[1], "--update") == 0){
+        if (argc != 2) return 1;
+        printf("[1/3] Downloading latest MCR sources...\n");
+        int retcode = system("git clone https://github.com/HyperWinX/MCR.git mcr_update > /dev/null");
+        if (retcode != 0){
+            fprintf(stderr, "Downloading failed!\n");
+            return 1;
+        }
+        printf("[2/3] Compiling MCR for your platform...\n");
+        retcode = system("gcc -O2 -march=native mcr_update/hashmap.c mcr_update/main.c -o mcr_update/mcr > /dev/null");
+        if (retcode != 0){
+            fprintf(stderr, "Compiling failed!\n");
+            system("rm -rf MCR");
+            return 1;
+        }
+        printf("[3/3] Trying to replace current MCR installation...\n");
+        retcode = system("rm -f /bin/mcr && mv mcr_update/mcr /bin/mcr");
+        if (retcode != 0){
+            fprintf(stderr, "Replacing current MCR installation failed!\n");
+            system("rm -rf mcr_update");
+            return 1;
+        }
+        printf("MCR update successful!\n");
+        system("rm -rf mcr_update");
+        exit(0);
+    }
+    else if (strcmp(argv[1], "--version") == 0){
+        printf("Current MCR version: %.1f\n", MCR_VERSION);
+        exit(0);
+    }
     parse_macroses();
     struct macro tmp;
     strcpy(tmp.key, argv[1]);
-    hashmap_scan(macroses, macro_iter, NULL);
     struct macro* macros = hashmap_get(macroses, &tmp);
     if (!macros){
         fprintf(stderr, "Invalid macros! Please initialize first.\n");
