@@ -170,7 +170,7 @@ int main(int argc, char *argv[])
     strcpy(path, "/home/");
     strcat(path, username);
     strcat(path, "/.config/mcr.conf");
-    if (argc == 2 && strcmp(argv[1], "install") == 0)
+    if (argc == 2 && strcmp(argv[1], "--install") == 0)
     {
         char current_path[1024];
         if (getcwd(current_path, sizeof(current_path)) == NULL)
@@ -198,7 +198,7 @@ int main(int argc, char *argv[])
                 return 0;
         }
     } //Program installation
-    else if (strcmp(argv[1], "addmacro") == 0) {
+    else if (strcmp(argv[1], "--addmacro") == 0) {
         parse_macroses();
         if (argc < 4)
             return -1;
@@ -219,7 +219,7 @@ int main(int argc, char *argv[])
         write_macroses();
         exit(0);
     } //Adding macros
-    else if (strcmp(argv[1], "remove") == 0){
+    else if (strcmp(argv[1], "--remove") == 0){
         if (argc != 3) return 1;
         parse_macroses();
         struct macro temp;
@@ -233,11 +233,20 @@ int main(int argc, char *argv[])
         write_macroses();
         exit(0);
     } //Removing macros
-    else if (strcmp(argv[1], "list") == 0){
+    else if (strcmp(argv[1], "--list") == 0){
         if (argc != 2) return 1;
         parse_macroses();
         printf(hashmap_count(macroses) > 0 ? "Available macroses:\n" : "There is no registered macroses!\n");
         hashmap_scan(macroses, macro_iter_listcmd, NULL);
+        exit(0);
+    }
+    else if (strcmp(argv[1], "--help") == 0){
+        if (argc != 2) return 1;
+        printf("Simple macros manager.\nUsage:\n");
+        printf("\tmcr --install - install program\n");
+        printf("\tmcr --list - display a list of available macroses\n");
+        printf("\tmcr --addmacro <macros> \"<value>\" - add macros\n");
+        printf("\tmcr --remove <macros> - remove macros\n");
         exit(0);
     }
     parse_macroses();
