@@ -249,7 +249,8 @@ int main(int argc, char *argv[])
         printf("\tmcr --list - display a list of available macroses\n");
         printf("\tmcr --addmacro <macros> \"<value>\" - add macros\n");
         printf("\tmcr --remove <macros> - remove macros\n");
-        exit(0);
+        printf("\tmcr --update - pulls latest sources and builds it locally\n");
+        printf("\tmcr --version <macros> - display current MCR version\n");        exit(0);
     }
     else if (strcmp(argv[1], "--update") == 0){
         if (argc != 2) return 1;
@@ -325,6 +326,5 @@ int main(int argc, char *argv[])
     memcpy(&buff, finalcommand, length + 2);
     free(finalcommand);
     hashmap_free(macroses);
-    printf(&buff);
     return system(buff);
 }
