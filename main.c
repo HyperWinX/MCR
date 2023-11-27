@@ -164,9 +164,20 @@ void write_macroses(void){
     }
 }
 
+void display_help(void){
+    printf("Simple macros manager.\nUsage:\n");
+    printf("\tmcr --install - install program\n");
+    printf("\tmcr --list - display a list of available macroses\n");
+    printf("\tmcr --addmacro <macros> \"<value>\" - add macros\n");
+    printf("\tmcr --remove <macros> - remove macros\n");
+}
+
 int main(int argc, char *argv[])
 {
-    if (argc == 1) return 0;
+    if (argc == 1){
+        display_help();
+        exit(0);
+    }
     char username[64];
     getlogin_r(username, 64);
     strcpy(path, "/home/");
@@ -244,13 +255,8 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(argv[1], "--help") == 0){
         if (argc != 2) return 1;
-        printf("Simple macros manager.\nUsage:\n");
-        printf("\tmcr --install - install program\n");
-        printf("\tmcr --list - display a list of available macroses\n");
-        printf("\tmcr --addmacro <macros> \"<value>\" - add macros\n");
-        printf("\tmcr --remove <macros> - remove macros\n");
-        printf("\tmcr --update - pulls latest sources and builds it locally\n");
-        printf("\tmcr --version <macros> - display current MCR version\n");        exit(0);
+        display_help();
+        exit(0);
     }
     else if (strcmp(argv[1], "--update") == 0){
         if (argc != 2) return 1;
@@ -326,5 +332,6 @@ int main(int argc, char *argv[])
     memcpy(&buff, finalcommand, length + 2);
     free(finalcommand);
     hashmap_free(macroses);
+    printf(&buff);
     return system(buff);
 }
