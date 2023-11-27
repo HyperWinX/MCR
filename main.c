@@ -320,9 +320,11 @@ int main(int argc, char *argv[])
             finalcommand[offset++] = '"';
         finalcommand[offset++] = ' ';
     }
+    finalcommand[offset - 1] = '\0';
     char buff[length];
-    memcpy(&buff, finalcommand, length);
+    memcpy(&buff, finalcommand, length + 2);
     free(finalcommand);
     hashmap_free(macroses);
+    printf(&buff);
     return system(buff);
 }
