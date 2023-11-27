@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include "hashmap.h"
 
-#define MCR_VERSION 1.2
+#define MCR_VERSION 1.3
 
 struct macro
 {
