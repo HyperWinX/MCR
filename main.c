@@ -332,6 +332,5 @@ int main(int argc, char *argv[])
     memcpy(&buff, finalcommand, length + 2);
     free(finalcommand);
     hashmap_free(macroses);
-    printf(&buff);
     return system(buff);
 }
