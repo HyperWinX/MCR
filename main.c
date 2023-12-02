@@ -170,6 +170,8 @@ void display_help(void){
     printf("\tmcr --list - display a list of available macroses\n");
     printf("\tmcr --addmacro <macros> \"<value>\" - add macros\n");
     printf("\tmcr --remove <macros> - remove macros\n");
+    printf("\tmcr --update - fetch latest sources and update\n");
+    printf("\tmcr --version - display current MCR version\n");
 }
 
 int main(int argc, char *argv[])
