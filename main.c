@@ -312,18 +312,15 @@ int main(int argc, char *argv[])
     length += strlen(macros->macros) + 1;
     for (int i = 0; i < argc - 2; i++)
         if (need_schars[i] == 1) length += 2;
-    char* finalcommand = (char*)calloc(length, sizeof(char));
-    if (!finalcommand){
-        fprintf(stderr, "Allocation failure!\n");
-        return 1;
-    }
-    strcpy(finalcommand, macros->macros);
+    char finalcommand[length];
+    memset((char*)&finalcommand, 0x00, length);
+    strcpy((char*)&finalcommand, macros->macros);
     finalcommand[strlen(macros->macros)] = ' ';
     int32_t offset = strlen(macros->macros) + 1;
     for (int i = 2; i < argc; i++){
         if (need_schars[i - 2] == 1)
             finalcommand[offset++] = '"';
-        strcat(finalcommand, argv[i]);
+        strcat((char*)&finalcommand, argv[i]);
         offset += strlen(argv[i]);
         if (need_schars[i - 2] == 1)
             finalcommand[offset++] = '"';
@@ -331,8 +328,7 @@ int main(int argc, char *argv[])
     }
     finalcommand[offset - 1] = '\0';
     char buff[length];
-    memcpy(&buff, finalcommand, length + 2);
-    free(finalcommand);
+    memcpy(&buff, (char*)&finalcommand, length + 2);
     hashmap_free(macroses);
     return system(buff);
 }
